@@ -14,3 +14,16 @@
    #choo {
        padding-left: 12%;
    }
+
+   .divider {
+    height: 20px;
+    background-color: white;
+   }
+
+   .current_train_schedule__container {
+	background: white;
+	height: 500px;
+	margin-left:14%;
+	margin-right:14%;
+	border: 1px #cccccc solid;
+	}
