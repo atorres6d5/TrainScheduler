@@ -2,9 +2,9 @@
 	/* display: flex; */
 	/* flex-direction: row; */
 	align-items: center;
-	height: 200px;
+	height: 150px;
     padding-left: 32%;
-    padding-top: 4%;
+    padding-top: 2%;
     margin-left: 1%;
     margin-right: 1%;
     background-color: brown;
@@ -20,10 +20,20 @@
     background-color: white;
    }
 
+   .jumbotron {
+       padding: 10px;
+       background-color: white;
+   }
+
    .current_train_schedule__container {
 	background: white;
-	height: 250px;
+	height: 280px;
 	margin-left:14%;
-	margin-right:14%;
-	border: 1px #cccccc solid;
-	}
+    margin-right:14%;
+    border: 1px #cccccc solid;
+    font-size: 10px;
+    }
+    
+    .form-control {
+        height: 15px;
+    }
