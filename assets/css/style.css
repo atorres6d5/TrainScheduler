@@ -3,9 +3,14 @@
 	/* flex-direction: row; */
 	align-items: center;
 	height: 200px;
-	margin-left: 32%;
+    padding-left: 32%;
+    padding-top: 4%;
+    margin-left: 1%;
+    margin-right: 1%;
+    background-color: brown;
+    color: white;
    } 
 
    #choo {
-       margin-left: 12%;
+       padding-left: 12%;
    }
