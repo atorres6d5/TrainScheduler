@@ -1,0 +1,11 @@
+   .site-nav__main {
+	/* display: flex; */
+	/* flex-direction: row; */
+	align-items: center;
+	height: 200px;
+	margin-left: 32%;
+   } 
+
+   #choo {
+       margin-left: 12%;
+   }
