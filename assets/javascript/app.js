@@ -1,121 +1,116 @@
-/* global moment firebase */
+// Steps to complete:
 
+// 1. Initialize Firebase
+// 2. Create button for adding new employees - then update the html + update the database
+// 3. Create a way to retrieve employees from the employee database.
+// 4. Create a way to calculate the months worked. Using difference between start and current time.
+//    Then use moment.js formatting to set difference in months.
+// 5. Calculate Total billed
+
+// 1. Initialize Firebase
 // Initialize Firebase
-// Make sure to match the configuration to the script version number in the HTML
-// (Ex. 3.0 != 3.7.0)
 var config = {
-  apiKey: "AIzaSyDxQqkGa3AKrcGmGVFalJe40g4hdzADf6w",
-  authDomain: "coder-bay-views.firebaseapp.com",
-  databaseURL: "https://coder-bay-views.firebaseio.com",
-  storageBucket: "coder-bay-views.appspot.com",
-  messagingSenderId: "17945436261"
+  apiKey: "AIzaSyDxvKiuE-5d6m_jf4fCxvgi7UC04-EZSJ4",
+  authDomain: "trainscheduler-19598.firebaseapp.com",
+  databaseURL: "https://trainscheduler-19598.firebaseio.com",
+  projectId: "trainscheduler-19598",
+  storageBucket: "",
+  messagingSenderId: "632711025701"
 };
-
 firebase.initializeApp(config);
 
 
-// Create a variable to reference the database.
+firebase.initializeApp(config);
+
 var database = firebase.database();
 
-// --------------------------------------------------------------
-// Link to Firebase Database for viewer tracking
-
-
-// --------------------------------------------------------------
-// Initial Values
-var initialBid = 0;
-var initialBidder = "No one :-(";
-var highPrice = initialBid;
-var highBidder = initialBidder;
-
-// --------------------------------------------------------------
-
-// Add ourselves to presence list when online.
-
-
-// Number of online users is the number of objects in the presence list.
-
-
-// ----------------------------------------------------------------
-// At the page load and subsequent value changes, get a snapshot of the local data.
-// This function allows you to update your page in real-time when the values within the firebase node bidderData changes
-database.ref("/bidderData").on("value", function(snapshot) {
-
-  // If Firebase has a highPrice and highBidder stored (first case)
-  if (snapshot.child("highBidder").exists() && snapshot.child("highPrice").exists()) {
-
-    // Set the local variables for highBidder equal to the stored values in firebase.
-    highBidder = snapshot.val().highBidder;
-    highPrice = parseInt(snapshot.val().highPrice);
-
-    // change the HTML to reflect the newly updated local values (most recent information from firebase)
-    $("#highest-bidder").text(snapshot.val().highBidder);
-    $("#highest-price").text("$" + snapshot.val().highPrice);
-
-    // Print the local data to the console.
-    console.log(snapshot.val().highBidder);
-    console.log(snapshot.val().highPrice);
-  }
-
-  // Else Firebase doesn't have a highPrice/highBidder, so use the initial local values.
-  else {
-
-    // Change the HTML to reflect the local value in firebase
-    $("#highest-bidder").text(highBidder);
-    $("#highest-price").text("$" + highPrice);
-
-    // Print the local data to the console.
-    console.log("local High Price");
-    console.log(highBidder);
-    console.log(highPrice);
-  }
-
-// If any errors are experienced, log them to console.
-}, function(errorObject) {
-  console.log("The read failed: " + errorObject.code);
-});
-
-// --------------------------------------------------------------
-
-// Whenever a user clicks the submit-bid button
-$("#submit-bid").on("click", function(event) {
+// 2. Button for adding Employees
+$("#add-employee-btn").on("click", function(event) {
   event.preventDefault();
 
-  // Get the input values
-  var bidderName = $("#bidder-name").val().trim();
-  var bidderPrice = parseInt($("#bidder-price").val().trim());
+  // Grabs user input
+  var empName = $("#employee-name-input").val().trim();
+  var empRole = $("#role-input").val().trim();
+  var empStart = moment($("#start-input").val().trim()).format("MM/DD/YYYY");
+  var empRate = $("#rate-input").val().trim();
 
-  // Log to console the Bidder and Price (Even if not the highest)
+  // Creates local "temporary" object for holding employee data
+  // var newEmp = {
+  //   name: empName,
+  //   role: empRole,
+  //   start: empStart,
+  //   rate: empRate
+  // };
 
+  // Uploads employee data to the database
+  database.ref().push({
+    name: empName,
+    role: empRole,
+    start: empStart,
+    rate: empRate
+  });
 
-  if (bidderPrice > highPrice) {
+  // Logs everything to console
+  console.log(newEmp.name);
+  console.log(newEmp.role);
+  console.log(newEmp.start);
+  console.log(newEmp.rate);
 
-    // Alert
-    alert("You are now the highest bidder.");
+  alert("Employee successfully added");
 
-    // Save the new price in Firebase
-    database.ref("/bidderData").set({
-      highBidder: bidderName,
-      highPrice: bidderPrice
-    });
-
-    // Log the new High Price
-    console.log("New High Price!");
-    console.log(bidderName);
-    console.log(bidderPrice);
-
-    // Store the new high price and bidder name as a local variable (could have also used the Firebase variable)
-    highBidder = bidderName;
-    highPrice = parseInt(bidderPrice);
-
-    // Change the HTML to reflect the new high price and bidder
-    $("#highest-bidder").text(bidderName);
-    $("#highest-price").text("$" + bidderPrice);
-
-  }
-  else {
-
-    // Alert
-    alert("Sorry that bid is too low. Try again.");
-  }
+  // Clears all of the text-boxes
+  $("#employee-name-input").val("");
+  $("#role-input").val("");
+  $("#start-input").val("");
+  $("#rate-input").val("");
 });
+
+// 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
+database.ref().on("child_added", function(childSnapshot) {
+  console.log(childSnapshot.val());
+
+  // Store everything into a variable.
+  var empName = childSnapshot.val().name;
+  var empRole = childSnapshot.val().role;
+  var empStart = childSnapshot.val().start;
+  var empRate = childSnapshot.val().rate;
+
+  // Employee Info
+  console.log(empName);
+  console.log(empRole);
+  console.log(empStart);
+  console.log(empRate);
+
+  // Prettify the employee start
+  var empStartPretty = moment(empStart).format("MM/DD/YYYY");
+  console.log('Start Date', empStartPretty)
+  // Calculate the months worked using hardcore math
+  // To calculate the months worked
+  var empMonths = moment().diff(moment(empStart), "months");
+  console.log(empMonths);
+
+  // Calculate the total billed rate
+  var empBilled = empMonths * empRate;
+  console.log(empBilled);
+
+  // Create the new row
+  var newRow = $("<tr>").append(
+    $("<td>").text(empName),
+    $("<td>").text(empRole),
+    $("<td>").text(empStartPretty),
+    $("<td>").text(empMonths),
+    $("<td>").text(empRate),
+    $("<td>").text(empBilled)
+  );
+
+  // Append the new row to the table
+  $("#employee-table > tbody").append(newRow);
+});
+
+// Example Time Math
+// -----------------------------------------------------------------------------
+// Assume Employee start date of January 1, 2015
+// Assume current date is March 1, 2016
+
+// We know that this is 15 months.
+// Now we will create code in moment.js to confirm that any attempt we use meets this test case
