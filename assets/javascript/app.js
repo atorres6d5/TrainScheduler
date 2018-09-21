@@ -22,44 +22,44 @@ firebase.initializeApp(config);
 var database = firebase.database();
 
 // 2. Button for adding Employees
-$("#add-employee-btn").on("click", function(event) {
+$("#add-train-btn").on("click", function(event) {
   event.preventDefault();
 
   // Grabs user input
-  var empName = $("#employee-name-input").val().trim();
-  var empRole = $("#role-input").val().trim();
-  var empStart = moment($("#start-input").val().trim()).format("MM/DD/YYYY");
-  var empRate = $("#rate-input").val().trim();
+  var trainName = $("#train-name-input").val().trim();
+  var trainDestination = $("#destination-input").val().trim();
+  var firstTrain = moment($("#first-train-input").val().trim()).format("HH:mm");
+  var trainFrequency = $("#frequency-input").val().trim();
 
   // Creates local "temporary" object for holding employee data
-  // var newEmp = {
-  //   name: empName,
-  //   role: empRole,
-  //   start: empStart,
-  //   rate: empRate
-  // };
+  var newTrain = {
+     name: trainName,
+     destination: trainDestination,
+     first: firstTrain,
+     frequency: trainFrequency
+   };
 
   // Uploads employee data to the database
   database.ref().push({
-    name: empName,
-    role: empRole,
-    start: empStart,
-    rate: empRate
+    name: trainName,
+    role: trainDestination,
+    start: firstTrain,
+    rate: trainFrequency
   });
 
   // Logs everything to console
-  console.log(newEmp.name);
-  console.log(newEmp.role);
-  console.log(newEmp.start);
-  console.log(newEmp.rate);
+  console.log(newTrain.name);
+  console.log(newTrain.destination);
+  console.log(newTrain.first);
+  console.log(newTrain.frequency);
 
-  alert("Employee successfully added");
+  alert("Train successfully added");
 
   // Clears all of the text-boxes
-  $("#employee-name-input").val("");
-  $("#role-input").val("");
-  $("#start-input").val("");
-  $("#rate-input").val("");
+  $("#train-name-input").val("");
+  $("#destination-input").val("");
+  $("#first-input").val("");
+  $("#frequency-input").val("");
 });
 
 // 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
