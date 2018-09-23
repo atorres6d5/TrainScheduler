@@ -33,7 +33,8 @@ $("#add-train-btn").on("click", function(event) {
   // Grabs user input
   var trainName = $("#train-name-input").val().trim();
   var trainDestination = $("#destination-input").val().trim();
-  var firstTrain = moment($("#first-train-input").val().trim()).format("HH:mm");
+  var firstTrain = $("#first-train-input").val().trim();
+  //var firstTrain = moment($("#first-train-input").val().trim()).format("HH:mm");
   var trainFrequency = $("#frequency-input").val().trim();
 
   // Creates local "temporary" object for holding train data
@@ -73,26 +74,41 @@ database.ref().on("child_added", function(childSnapshot) {
 
   // Store everything into a variable.
   var trainName = childSnapshot.val().name;
-  var trainDestination = childSnapshot.val().destination;
-  var firstTrain = childSnapshot.val().first;
+  var trainDestination = childSnapshot.val().destination;  
   var trainFrequency = childSnapshot.val().frequency;
+  var firstTrain = childSnapshot.val().first;  
+  var currentTime = moment();
+  console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm")); 
+  var firstTimeConverted = moment(firstTrain, "HH:mm").subtract(1, "years");
+  console.log(firstTimeConverted);
+  var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+  console.log("DIFFERENCE IN TIME: " + diffTime);
+  var tRemainder = diffTime % trainFrequency;
+  console.log(tRemainder); 
+  var tMinutesTillTrain = trainFrequency - tRemainder;
+  console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain); 
+  var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+  console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
 
   // Employee Info
   console.log(trainName);
   console.log(trainDestination);
-  console.log(firstTrain);
   console.log(trainFrequency);
+  console.log(nextTrain);
+  console.log(tMinutesTillTrain);
+
 
   // Prettify the first train
-  var firstTrainPretty = moment(firstTrain).format("HH/mm");
-  console.log('First Train', firstTrainPretty)
+  //var firstTrainPretty = moment(firstTrain).format("HH:mm");
+  //console.log('First Train', firstTrainPretty)
  
   // Create the new row
   var newRow = $("<tr>").append(
     $("<td>").text(trainName),
-    $("<td>").text(trainDestination),
-    $("<td>").text(firstTrainPretty),
+    $("<td>").text(trainDestination),    
     $("<td>").text(trainFrequency),
+    $("<td>").text(nextTrain),
+    $("<td>").text(tMinutesTillTrain)
   );
 
   // Append the new row to the table
